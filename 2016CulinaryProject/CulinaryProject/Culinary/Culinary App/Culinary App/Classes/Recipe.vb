@@ -9,7 +9,6 @@
     Public Sub New()
         Recipes.Add(Me)
         Me.Index = Recipes.Count
-        Use = True
     End Sub
     Public Sub RemoveItem(Item As String)
         For i As Integer = 0 To Items.Count - 1
