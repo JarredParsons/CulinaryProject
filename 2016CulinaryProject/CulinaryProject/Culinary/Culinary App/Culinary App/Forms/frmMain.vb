@@ -6,6 +6,7 @@ Public Class frmMain
         con.ConnectionString = dbProvider
         con.Open()
         tabControl.SelectedIndex = 1
+        dsRecipes = New DataSet
         FillCategories()
     End Sub
     Private Sub txtSearch_TextChanged(sender As Object, e As EventArgs) Handles txtSearch.TextChanged
@@ -15,7 +16,7 @@ Public Class frmMain
     Private Sub cmboType_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmboType.SelectedIndexChanged
         SearchQuery("SELECT * FROM Culinary WHERE Category = '" & cmboType.Text & "'")
     End Sub
-    Private Sub mnuAddToCart_Click(sender As Object, e As EventArgs) Handles mnuAddToCart.Click
+    Private Sub mnuAddToCart_Click(sender As Object, e As EventArgs) Handles mnuAddToCart.Click, lstItems.DoubleClick
         For Each Item As ListViewItem In lstItems.SelectedItems
             If Cart.Contains(Item.Text) Then
                 MessageBox.Show("That item already exist in the cart")
@@ -66,17 +67,44 @@ Public Class frmMain
     Private Sub btnAddRecipe_Click(sender As Object, e As EventArgs) Handles btnAddRecipe.Click
         Dim R As New Recipe
 
+        Dim strResponse As String
+
         With R
             For Each item As ListViewItem In lstReview.Items
                 R.Items.Add(item.Text & ":" & item.SubItems(1).Text & ":" & item.SubItems(3).Text & "/" & item.SubItems(2).Text)
             Next
-            .Name = "Recipe Costing " & .Index
+            '.Name = "Recipe Costing " & .Index -- old default recipe name
+            strResponse = InputBox("Please name recipe: ")
+            .Name = strResponse
             Dim lvi As New ListViewItem(.Index)
-            lvi.SubItems.Add("Recipe Costing " & .Index)
+            lvi.SubItems.Add(strResponse)
             lvi.SubItems.Add(.Items.Count)
             lstRecipes.Items.Add(lvi)
         End With
 
+        'Create DataTable as DataSet Member
+        Dim dtCurrentTable As DataTable = dsRecipes.Tables.Add(strResponse)
+
+        'Create columns
+        dtCurrentTable.Columns.Add("No")
+        dtCurrentTable.Columns.Add("ItemName")
+        dtCurrentTable.Columns.Add("Increment")
+        dtCurrentTable.Columns.Add("Price")
+
+        'Add ListViewItems to DataTable.
+        For Each item As ListViewItem In lstReview.Items
+            'Creates new DataRow using ingredient details and user-determined recipe name
+            Dim newRow As DataRow = dsRecipes.Tables(strResponse).NewRow()
+            'Populates new row
+            newRow("No") = item.SubItems(0)
+            newRow("ItemName") = item.SubItems(1)
+            newRow("Increment") = item.SubItems(2)
+            newRow("Price") = item.SubItems(3)
+            'Adds row to recipe DataSet
+            dsRecipes.Tables(strResponse).Rows.Add(newRow)
+        Next
+
+        MessageBox.Show(dsRecipes.Tables(strResponse).Rows.Count)
 
         Cart.Clear()
         lstIngredients.Items.Clear()
@@ -86,7 +114,7 @@ Public Class frmMain
         grpCart.Text = "       Ingredients (" & Cart.Count & ")"
         thReview.Text = "REVIEW (0)"
         thDone.Text = "COMPLETED (" & Recipes.Count & ")"
-        MessageBox.Show("Succesfully added " & R.Items.Count & " items to receipe #" & R.Index, "Culinary", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        MessageBox.Show("Successfully added " & R.Items.Count & " items to recipe '" & strResponse & "'", "Culinary", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
     Private Sub mnuViewItems_Click(sender As Object, e As EventArgs) Handles mnuViewItems.Click
         For Each Item As ListViewItem In lstRecipes.SelectedItems
