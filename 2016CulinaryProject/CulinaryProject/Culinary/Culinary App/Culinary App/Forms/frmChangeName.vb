@@ -13,6 +13,7 @@
         With frmMain
             For Each Item As ListViewItem In .lstRecipes.Items
                 If Item.Text = R.Index Then
+                    dsRecipes.Tables(Item.SubItems(1).Text).TableName = txtName.Text
                     Item.SubItems(1).Text = txtName.Text
                     Exit For
                 End If
