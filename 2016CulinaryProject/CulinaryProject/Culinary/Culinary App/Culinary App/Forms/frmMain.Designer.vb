@@ -492,12 +492,12 @@ Partial Class frmMain
         '
         Me.mnuIngredientsReview.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuRemoveIngredients})
         Me.mnuIngredientsReview.Name = "ContextMenuStrip1"
-        Me.mnuIngredientsReview.Size = New System.Drawing.Size(153, 48)
+        Me.mnuIngredientsReview.Size = New System.Drawing.Size(118, 26)
         '
         'mnuRemoveIngredients
         '
         Me.mnuRemoveIngredients.Name = "mnuRemoveIngredients"
-        Me.mnuRemoveIngredients.Size = New System.Drawing.Size(152, 22)
+        Me.mnuRemoveIngredients.Size = New System.Drawing.Size(117, 22)
         Me.mnuRemoveIngredients.Text = "Remove"
         '
         'thDone
