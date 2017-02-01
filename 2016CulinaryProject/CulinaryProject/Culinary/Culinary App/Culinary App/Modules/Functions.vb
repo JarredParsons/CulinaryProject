@@ -93,43 +93,58 @@ Module Functions
             .thReview.Text = "REVIEW (" & Cart.Count & ")"
         End With
     End Sub
-    Public Sub ExportToExcel()
+    Public Sub ExportToExcel(recipes)
         With frmMain
-            Try
-                .Cursor = Cursors.WaitCursor
-                Dim ExcelApp As Object, ExcelBook As Object
+            .Cursor = Cursors.WaitCursor
+            Dim ExcelApp As Object, ExcelBook As Object
+            ExcelApp = CreateObject("Excel.Application")
+            ExcelBook = ExcelApp.Workbooks.Add
+            For Each recipe As DataTable In recipes.Tables
                 Dim ExcelSheet As Object
-                Dim i As Integer
-                Dim j As Integer
-                ExcelApp = CreateObject("Excel.Application")
-                ExcelBook = ExcelApp.WorkBooks.Add
-                ExcelSheet = ExcelBook.WorkSheets(1)
-
+                ExcelSheet = ExcelBook.Worksheets.add
+                ExcelSheet.name = recipe.TableName
                 With ExcelSheet
                     .Columns(1).ColumnWidth = 40
                     .Columns(2).ColumnWidth = 30
                     .Columns(3).ColumnWidth = 20
-                    .cells(1, 1) = "Item Name"
-                    .cells(1, 2) = "Increment"
-                    .cells(1, 3) = "Price"
+                    .cells(1, 1) = "Item Num"
+                    .cells(1, 2) = "Item Name"
+                    .cells(1, 3) = "Increment"
+                    .cells(1, 4) = "Price"
                     .cells(1, 1).EntireRow.Font.Bold = True
                 End With
 
-                For i = 2 To .lstReview.Items.Count
-                    ExcelSheet.cells(i, 2) = .lstReview.Items(i - 2).Text
-                    For j = 1 To .lstReview.Columns.Count - 1
-                        ExcelSheet.cells(i, j) = .lstReview.Items(i - 1).SubItems(j).Text
-                    Next
+
+                Dim row = 2
+                For Each item In recipe.Rows
+                    Dim col = 1
+                    With ExcelSheet
+                        .cells(row, col) = item("No")
+                        col += 1
+                        .cells(row, col) = item("ItemName")
+                        col += 1
+                        .cells(row, col) = item("Increment")
+                        col += 1
+                        .cells(row, col) = item("Price")
+                    End With
+                    row += 1
+
                 Next
-                ExcelApp.Visible = True
-                ExcelSheet = Nothing
-                ExcelBook = Nothing
-                ExcelApp = Nothing
-                .Cursor = Cursors.Default
-            Catch ex As Exception
-                .Cursor = Cursors.Default
-                MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            End Try
+
+
+
+            Next
+            Dim save = New SaveFileDialog()
+            Dim filename
+            If save.ShowDialog() = DialogResult.OK Then
+                filename = save.FileName
+            Else
+                MessageBox.Show("Please enter a valid Filename")
+                ExcelBook.Close()
+                Return
+            End If
+            ExcelBook.SaveAs(filename + ".xlsx")
+            ExcelBook.Close()
         End With
     End Sub
 End Module
