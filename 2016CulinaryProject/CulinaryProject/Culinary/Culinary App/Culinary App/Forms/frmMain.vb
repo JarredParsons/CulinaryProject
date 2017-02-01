@@ -96,15 +96,13 @@ Public Class frmMain
             'Creates new DataRow using ingredient details and user-determined recipe name
             Dim newRow As DataRow = dsRecipes.Tables(strResponse).NewRow()
             'Populates new row
-            newRow("No") = item.SubItems(0)
-            newRow("ItemName") = item.SubItems(1)
-            newRow("Increment") = item.SubItems(2)
-            newRow("Price") = item.SubItems(3)
+            newRow("No") = item.SubItems(0).Text
+            newRow("ItemName") = item.SubItems(1).Text
+            newRow("Increment") = item.SubItems(2).Text
+            newRow("Price") = item.SubItems(3).Text
             'Adds row to recipe DataSet
             dsRecipes.Tables(strResponse).Rows.Add(newRow)
         Next
-
-        MessageBox.Show(dsRecipes.Tables(strResponse).Rows.Count)
 
         Cart.Clear()
         lstIngredients.Items.Clear()
@@ -151,5 +149,9 @@ Public Class frmMain
         Next
         grpCart.Text = "       Ingredients (" & Cart.Count & ")"
         thReview.Text = "REVIEW (" & Cart.Count & ")"
+    End Sub
+
+    Private Sub btnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
+        ExportToExcel(dsRecipes)
     End Sub
 End Class
