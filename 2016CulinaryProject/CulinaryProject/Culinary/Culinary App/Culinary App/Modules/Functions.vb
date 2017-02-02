@@ -95,27 +95,29 @@ Module Functions
     End Sub
     Public Sub ExportToExcel(recipes)
         With frmMain
-            .Cursor = Cursors.WaitCursor
             Dim ExcelApp As Object, ExcelBook As Object
             ExcelApp = CreateObject("Excel.Application")
             ExcelBook = ExcelApp.Workbooks.Add
+            Dim count = 1
             For Each recipe As DataTable In recipes.Tables
                 Dim ExcelSheet As Object
-                ExcelSheet = ExcelBook.Worksheets.add
+                ExcelSheet = ExcelBook.Worksheets(count)
+                count += 1
                 ExcelSheet.name = recipe.TableName
                 With ExcelSheet
                     .Columns(1).ColumnWidth = 40
                     .Columns(2).ColumnWidth = 30
                     .Columns(3).ColumnWidth = 20
-                    .cells(1, 1) = "Item Num"
-                    .cells(1, 2) = "Item Name"
-                    .cells(1, 3) = "Increment"
-                    .cells(1, 4) = "Price"
-                    .cells(1, 1).EntireRow.Font.Bold = True
+                    .cells(1, 1) = recipe.TableName
+                    .cells(2, 1) = recipe.Columns(0).ColumnName
+                    .cells(2, 2) = recipe.Columns(1).ColumnName
+                    .cells(2, 3) = recipe.Columns(2).ColumnName
+                    .cells(2, 4) = recipe.Columns(3).ColumnName
+                    .cells(2, 1).EntireRow.Font.Bold = True
                 End With
 
 
-                Dim row = 2
+                Dim row = 3
                 For Each item In recipe.Rows
                     Dim col = 1
                     With ExcelSheet
@@ -139,12 +141,22 @@ Module Functions
             If save.ShowDialog() = DialogResult.OK Then
                 filename = save.FileName
             Else
-                MessageBox.Show("Please enter a valid Filename")
+                MessageBox.Show("Process Successfully Cancelled")
                 ExcelBook.Close()
                 Return
             End If
-            ExcelBook.SaveAs(filename + ".xlsx")
+            Dim sc As StringComparison = StringComparison.CurrentCulture
+
+            If filename.EndsWith(".xlsx", sc) Then
+                ExcelBook.SaveAs(filename)
+            Else
+                ExcelBook.SaveAs(filename + ".xlsx")
+            End If
+
             ExcelBook.Close()
+            MessageBox.Show("Export Successful")
+
         End With
+
     End Sub
 End Module
