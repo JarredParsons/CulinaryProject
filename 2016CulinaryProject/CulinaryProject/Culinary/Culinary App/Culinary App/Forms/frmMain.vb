@@ -68,13 +68,18 @@ Public Class frmMain
         Dim R As New Recipe
 
         Dim strResponse As String
-
         With R
             For Each item As ListViewItem In lstReview.Items
                 R.Items.Add(item.Text & ":" & item.SubItems(1).Text & ":" & item.SubItems(3).Text & "/" & item.SubItems(2).Text)
             Next
             '.Name = "Recipe Costing " & .Index -- old default recipe name
-            strResponse = InputBox("Please name recipe: ")
+            strResponse = InputBox("Please name recipe: ", "Recipe Name")
+
+
+            If String.IsNullOrWhiteSpace(strResponse) Or Not Len(strResponse) > 3 Then
+                MessageBox.Show("That name doesn't meet the requirements!" & vbCrLf & vbCrLf & "- Four or more characters" & vbCrLf & "- Contains more then just spaces", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+            End If
             .Name = strResponse
             Dim lvi As New ListViewItem(.Index)
             lvi.SubItems.Add(strResponse)
