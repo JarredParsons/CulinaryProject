@@ -1,5 +1,6 @@
 ﻿Imports System.Text.RegularExpressions
 Imports System.Data.SqlClient
+Imports System.IO
 Public Class frmMain
     Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Dim dbProvider As String = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" & Application.StartupPath & "\" & DatabaseName & ".accdb"
@@ -158,5 +159,67 @@ Public Class frmMain
 
     Private Sub btnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
         ExportToExcel(dsRecipes)
+    End Sub
+
+    Public Sub UpdateDatabase()
+        Dim strChosenFile As String
+        strChosenFile = PickFile()
+        If Len(Trim(strChosenFile)) > 0 Then
+            If CopyFile(strChosenFile) = True Then
+                MsgBox("Database successfully updated.")
+                tabControl.SelectedIndex = 1
+            End If
+        Else
+            tabControl.SelectedIndex = 1
+        End If
+    End Sub
+
+    Public Function PickFile() As String
+        Dim fileDialog As OpenFileDialog = New OpenFileDialog()
+        PickFile = ""
+
+        fileDialog.Title = "Select Updated Database File"
+        fileDialog.InitialDirectory = "C:\"
+        fileDialog.Filter = "Access Database Files (*.accdb)|*.accdb"
+        fileDialog.RestoreDirectory = True
+        fileDialog.Multiselect = False
+
+        If fileDialog.ShowDialog() = DialogResult.OK Then
+            PickFile = fileDialog.FileName
+        End If
+    End Function
+
+    Public Function CopyFile(strFileName As String) As Boolean
+        On Error GoTo CopyFile_Error
+        CopyFile = False
+        Dim strFileNameWithoutPath As String = Path.GetFileName(strFileName)
+        Dim destination As String = Application.StartupPath & "\" & strFileNameWithoutPath
+        My.Computer.FileSystem.CopyFile(strFileName, destination, True)
+        CopyFile = True
+
+CopyFile_Cleanup:
+        Exit Function
+CopyFile_Error:
+        ErrorHandler("CopyFile()")
+        Resume CopyFile_Cleanup
+    End Function
+
+    Public Sub ErrorHandler(strFunction)
+        Dim errNumber As Long
+        Dim errDesc As String
+
+        errNumber = Err.Number
+        errDesc = Err.Description
+
+        MsgBox("Error number " & errNumber & ": " & errDesc & " occurred in the " & strFunction & " function.")
+    End Sub
+
+    Private Sub tabControl_Selected(sender As Object, e As TabControlEventArgs) Handles tabControl.Selected
+        Dim testIndex As Integer
+        testIndex = tabControl.SelectedIndex
+
+        If testIndex = 7 Then
+            UpdateDatabase()
+        End If
     End Sub
 End Class

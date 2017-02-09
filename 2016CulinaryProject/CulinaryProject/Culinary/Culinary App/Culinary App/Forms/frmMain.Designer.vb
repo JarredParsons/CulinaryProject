@@ -76,6 +76,8 @@ Partial Class frmMain
         Me.chMenuNo = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.chRecipeName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.chIngredients = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.thUpdate = New System.Windows.Forms.TabPage()
+        Me.tbUpdate = New System.Windows.Forms.TabPage()
         Me.mnuCatalog.SuspendLayout()
         Me.mnuIngredients.SuspendLayout()
         Me.mnuRecipes.SuspendLayout()
@@ -174,6 +176,8 @@ Partial Class frmMain
         Me.tabControl.Controls.Add(Me.tpIngredients)
         Me.tabControl.Controls.Add(Me.thDone)
         Me.tabControl.Controls.Add(Me.tpRecipes)
+        Me.tabControl.Controls.Add(Me.thUpdate)
+        Me.tabControl.Controls.Add(Me.tbUpdate)
         Me.tabControl.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tabControl.Font = New System.Drawing.Font("Segoe UI", 9.0!)
         Me.tabControl.ItemSize = New System.Drawing.Size(40, 180)
@@ -563,6 +567,29 @@ Partial Class frmMain
         Me.chIngredients.Text = "Total Ingredients"
         Me.chIngredients.Width = 220
         '
+        'thUpdate
+        '
+        Me.thUpdate.BackColor = System.Drawing.Color.White
+        Me.thUpdate.Font = New System.Drawing.Font("Segoe UI", 9.0!)
+        Me.thUpdate.ForeColor = System.Drawing.Color.FromArgb(CType(CType(114, Byte), Integer), CType(CType(119, Byte), Integer), CType(CType(141, Byte), Integer))
+        Me.thUpdate.Location = New System.Drawing.Point(184, 4)
+        Me.thUpdate.Name = "thUpdate"
+        Me.thUpdate.Size = New System.Drawing.Size(1059, 627)
+        Me.thUpdate.TabIndex = 6
+        Me.thUpdate.Text = "Update Database"
+        '
+        'tbUpdate
+        '
+        Me.tbUpdate.BackColor = System.Drawing.Color.White
+        Me.tbUpdate.Font = New System.Drawing.Font("Segoe UI", 9.0!)
+        Me.tbUpdate.ForeColor = System.Drawing.Color.FromArgb(CType(CType(114, Byte), Integer), CType(CType(119, Byte), Integer), CType(CType(141, Byte), Integer))
+        Me.tbUpdate.Location = New System.Drawing.Point(184, 4)
+        Me.tbUpdate.Name = "tbUpdate"
+        Me.tbUpdate.Size = New System.Drawing.Size(1059, 627)
+        Me.tbUpdate.TabIndex = 7
+        Me.tbUpdate.Tag = "#f4ee42"
+        Me.tbUpdate.Text = "Update Database"
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -645,4 +672,6 @@ Partial Class frmMain
     Friend WithEvents mnuRemoveRecipe As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents mnuIngredientsReview As System.Windows.Forms.ContextMenuStrip
     Friend WithEvents mnuRemoveIngredients As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents thUpdate As TabPage
+    Friend WithEvents tbUpdate As TabPage
 End Class
